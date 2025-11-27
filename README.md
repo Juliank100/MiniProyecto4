@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # 🐉 DragonQuest – Mini Proyecto 3  
 *Materia:* Programación Orientada a Eventos  
 *Profesor:* Joshua Triana  
@@ -134,3 +135,7 @@ mvc/
 - Luego abrir el PR en GitHub para revisión.
 
 ---
+=======
+# MiniProyecto4
+Miniproyecto 4 POE
+>>>>>>> 6b8dd00ed4c912a9874ab6e0ebca21807a0ef638
