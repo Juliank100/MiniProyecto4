@@ -1,6 +1,6 @@
 package mvc;
 
-import mvc.view.gui.VentanaPrincipal;
+import mvc.view.gui.VentanaPrincipalCompleta;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -30,7 +30,7 @@ public class MainMVC {
             System.out.println("📁 Cargando recursos...");
             
             try {
-                VentanaPrincipal ventana = new VentanaPrincipal();
+                VentanaPrincipalCompleta ventana = new VentanaPrincipalCompleta();
                 ventana.setVisible(true);
                 System.out.println("✅ Ventana principal iniciada correctamente");
             } catch (Exception e) {

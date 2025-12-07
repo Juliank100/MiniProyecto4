@@ -1,0 +1,119 @@
+=== DRAGON QUEST VIII - PARTIDA GUARDADA ===
+Fecha: 06/12/2025 22:59:47
+Turno: 1
+
+[HEROES]
+Total: 4
+---
+Nombre: Héroe
+Tipo: Heroe
+HP: 100/100
+MP: 50/50
+Ataque: 20
+Defensa: 10
+Velocidad: 15
+Estado: DORMIDO
+EstadoDuracion: 4
+Habilidades: Bola de Fuego,Curar,Gigaslash
+---
+Nombre: Yangus
+Tipo: Heroe
+HP: 120/120
+MP: 30/30
+Ataque: 25
+Defensa: 15
+Velocidad: 10
+Estado: NORMAL
+EstadoDuracion: 0
+Habilidades: Hachazo Brutal,Golpe Aturdidor,Primeros Auxilios
+---
+Nombre: Jessica
+Tipo: Heroe
+HP: 50/80
+MP: 70/70
+Ataque: 18
+Defensa: 8
+Velocidad: 20
+Estado: NORMAL
+EstadoDuracion: 0
+Habilidades: Rayo,Toxina,Kafrizzle,Hipnosis
+---
+Nombre: Angelo
+Tipo: Heroe
+HP: 90/90
+MP: 60/60
+Ataque: 22
+Defensa: 12
+Velocidad: 18
+Estado: NORMAL
+EstadoDuracion: 0
+Habilidades: Bendición,Toque Sagrado,Curación Divina,Purificación
+
+[ENEMIGOS]
+Total: 4
+---
+Nombre: Fantasma
+Tipo: Enemigo
+HP: 85/85
+MP: 32/40
+Ataque: 18
+Defensa: 8
+Velocidad: 21
+Estado: NORMAL
+EstadoDuracion: 0
+Comportamiento: agresivo
+---
+Nombre: Slime Metálico
+Tipo: Enemigo
+HP: 50/50
+MP: 30/30
+Ataque: 15
+Defensa: 25
+Velocidad: 35
+Estado: NORMAL
+EstadoDuracion: 0
+Comportamiento: agresivo
+---
+Nombre: Orco Guerrero
+Tipo: Enemigo
+HP: 95/95
+MP: 35/35
+Ataque: 22
+Defensa: 12
+Velocidad: 16
+Estado: NORMAL
+EstadoDuracion: 0
+Comportamiento: agresivo
+---
+Nombre: Dragón Oscuro
+Tipo: MiniBoss
+HP: 216/216
+MP: 40/40
+Ataque: 37
+Defensa: 15
+Velocidad: 23
+Estado: NORMAL
+EstadoDuracion: 0
+Comportamiento: agresivo
+
+[INVENTARIOS]
+Heroe: Héroe
+  Item: Poción media | Cantidad: 2
+  Item: Hierba Medicinal | Cantidad: 3
+  Item: Agua Bendita | Cantidad: 1
+  Item: Pluma del Mundo | Cantidad: 1
+Heroe: Yangus
+  Item: Poción grande | Cantidad: 1
+  Item: Hierba Medicinal | Cantidad: 4
+  Item: Antídoto | Cantidad: 2
+Heroe: Angelo
+  Item: Poción pequeña | Cantidad: 3
+  Item: Agua Bendita | Cantidad: 2
+  Item: Antídoto | Cantidad: 1
+  Item: Pluma del Mundo | Cantidad: 1
+Heroe: Jessica
+  Item: Éter | Cantidad: 3
+  Item: Semilla Mágica | Cantidad: 2
+  Item: Hierba Medicinal | Cantidad: 2
+
+=== FIN DE PARTIDA ===

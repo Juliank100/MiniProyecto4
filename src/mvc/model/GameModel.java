@@ -1,6 +1,6 @@
 package mvc.model;
 
-import mvc.model.combate.Batalla;
+import mvc.model.combate.BatallaConSistemas;
 import mvc.model.personajes.Personaje;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.Scanner;
  * No cambia la lógica: delega llamadas a Batalla y a las clases del proyecto.
  */
 public class GameModel {
-    private Batalla batalla;
+    private BatallaConSistemas batalla;
 
     public GameModel() {
         // no inicializamos Batalla aún; se crea al iniciar combate
@@ -26,7 +26,7 @@ public class GameModel {
      */
     public boolean iniciarBatallaConsola(Scanner sc) {
         if (sc == null) throw new IllegalArgumentException("Scanner no puede ser null");
-        this.batalla = new Batalla(sc);
+        this.batalla = new BatallaConSistemas(sc);
         // No consumimos ni cambiamos la lógica interna; quien llame podrá usar Batalla directamente si lo desea.
         try {
             batalla.iniciarCombate();
@@ -76,5 +76,5 @@ public class GameModel {
      * como delegados a Batalla. Por ahora mantenemos un adaptador mínimo y seguro.
      */
 
-    public Batalla getBatallaRaw() { return this.batalla; }
+    public BatallaConSistemas getBatallaRaw() { return this.batalla; }
 }
