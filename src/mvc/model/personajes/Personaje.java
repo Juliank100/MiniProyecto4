@@ -2,6 +2,7 @@ package mvc.model.personajes;
 
 import mvc.model.estados.EstadoAlterado;
 import mvc.model.habilidades.Habilidad;
+import mvc.model.exceptions.*; // Import all custom exceptions
 
 import java.util.*;
 
@@ -42,6 +43,9 @@ public abstract class Personaje {
     }
 
     public void recibirDaño(int cantidad) {
+        if (!estaVivo()) {
+            throw new PersonajeMuertoException("No se puede recibir daño, el personaje está muerto.");
+        }
         int daño = Math.max(1, cantidad - defensa);
         hpActual -= daño;
         if (hpActual < 0) hpActual = 0;
@@ -53,6 +57,9 @@ public abstract class Personaje {
     }
 
     public void curar(int cantidad) {
+        if (!estaVivo()) {
+            throw new PersonajeMuertoException("No se puede curar, el personaje está muerto.");
+        }
         int hpAnterior = hpActual;
         hpActual = Math.min(hpMax, hpActual + cantidad);
         int curado = hpActual - hpAnterior;
@@ -71,8 +78,7 @@ public abstract class Personaje {
      */
     public void aplicarEstado(EstadoAlterado nuevo) {
         if (estado != EstadoAlterado.NORMAL) {
-            System.out.println(nombre + " ya tiene un estado (" + estado + "). No se aplica " + nuevo + ".");
-            return;
+            throw new EstadoYaPresenteException("No se puede aplicar el estado " + nuevo + ", ya hay un estado activo.");
         }
         estado = nuevo;
 
@@ -159,13 +165,13 @@ public abstract class Personaje {
      * Permite eliminar un estado alterado específico
      */
     public boolean quitarEstado(EstadoAlterado e) {
-        if (estado == e) {
-            System.out.println("✨ " + nombre + " se recupera del estado " + e + ".");
-            estado = EstadoAlterado.NORMAL;
-            estadoDuracion = 0;
-            return true;
+        if (estado != e) {
+            throw new EstadoNoEncontradoException("No se puede quitar el estado " + e + ", no está presente.");
         }
-        return false;
+        System.out.println("✨ " + nombre + " se recupera del estado " + e + ".");
+        estado = EstadoAlterado.NORMAL;
+        estadoDuracion = 0;
+        return true;
     }
 
     /**
@@ -187,6 +193,9 @@ public abstract class Personaje {
      * ⭐ NUEVO: Consume MP del personaje
      */
     public boolean consumirMP(int cantidad) {
+        if (!estaVivo()) {
+            throw new PersonajeMuertoException("No se puede consumir MP, el personaje está muerto.");
+        }
         if (mpActual >= cantidad) {
             mpActual -= cantidad;
             return true;
