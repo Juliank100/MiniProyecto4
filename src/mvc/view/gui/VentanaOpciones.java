@@ -293,8 +293,8 @@ public class VentanaOpciones extends JDialog {
     private void aplicarCambiosVolumen() {
         // Obtener la ventana principal para ajustar el volumen
         Window owner = getOwner();
-        if (owner instanceof VentanaPrincipal) {
-            ((VentanaPrincipal) owner).ajustarVolumenMusica();
+        if (owner instanceof VentanaPrincipalCompleta) {
+            ((VentanaPrincipalCompleta) owner).ajustarVolumenMusica();
         }
         
         // También podríamos ajustar efectos de sonido aquí si los hubiera

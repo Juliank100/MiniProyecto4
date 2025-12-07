@@ -17,14 +17,14 @@ import javax.swing.SwingUtilities;
  * tocar su código, este adaptador solo abre la ventana.
  */
 public class GUIAdapter {
-    private VentanaPrincipal ventanaPrincipal;
+    private VentanaPrincipalCompleta ventanaPrincipal;
 
     public GUIAdapter(GameController c) {
     }
     public void show() {
         SwingUtilities.invokeLater(() -> {
             try {
-                ventanaPrincipal = new VentanaPrincipal();
+                ventanaPrincipal = new VentanaPrincipalCompleta();
                 ventanaPrincipal.setVisible(true);
                 // Si VentanaPrincipal tiene métodos públicos para registrar listeners,
                 // aquí es donde los registraríamos, por ejemplo:
