@@ -97,11 +97,18 @@ public class VentanaCombateCompleta extends JFrame {
         // Crear interfaz
         crearInterfaz();
         
-        // Configurar redirección de System.out al log
-        ConsolaRedirect.configurarRedireccion(logCombate);
+        // Configurar redirección de System.out al log DESPUÉS de crear la interfaz
+        if (logCombate != null) {
+            ConsolaRedirect.configurarRedireccion(logCombate);
+        }
         
         // Reproducir música de batalla
         reproducirMusica("/sonidos/musica_batalla.wav");
+        
+        agregarLog("╔═══════════════════════════════════════════════════════════════╗");
+        agregarLog("║     ¡COMIENZA LA BATALLA EN EL REINO DE TRODAIN!            ║");
+        agregarLog("║              Sistema Completo con Todas las Funcionalidades  ║");
+        agregarLog("╚═══════════════════════════════════════════════════════════════╝");
         
         // Iniciar primer turno
         SwingUtilities.invokeLater(this::iniciarSiguienteTurno);
@@ -111,14 +118,65 @@ public class VentanaCombateCompleta extends JFrame {
      * Constructor para cargar partida guardada
      */
     public VentanaCombateCompleta(EstadoBatalla estado) {
-        this();
+        // Primero llamamos al constructor por defecto para inicializar todo
+        setTitle("Combate - Dragon Quest VIII (Sistema Completo)");
+        setSize(1200, 750);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setResizable(true);
+        
+        // Cargar fondo
         try {
-            cargarDesdeEstado(estado);
-            turno = estado.turnoActual;
-            actualizarLabelTurno();
-            agregarLog("✅ Partida cargada - Continuando desde turno " + turno);
+            URL ruta = getClass().getResource("/imagenes/fondo_azul.png");
+            if (ruta != null) {
+                fondo = new ImageIcon(ruta).getImage();
+            }
         } catch (Exception e) {
-            mostrarError("Error al cargar partida", e.getMessage());
+            System.err.println("⚠️ Error al cargar fondo: " + e.getMessage());
+        }
+        
+        // Guardar salida original
+        salidaOriginal = System.out;
+        
+        // Crear scanner para enemigos
+        scannerEnemigos = new Scanner("dummy");
+        
+        // Inicializar estructuras de datos
+        heroes = new ArrayList<>();
+        enemigos = new ArrayList<>();
+        inventariosHeroes = new HashMap<>();
+        panelesHeroes = new ArrayList<>();
+        panelesEnemigos = new ArrayList<>();
+        historial = new HistorialCombate();
+        
+        try {
+            // Cargar estado desde partida guardada
+            cargarDesdeEstadoCompleto(estado);
+            turno = estado.turnoActual;
+            
+            // Crear interfaz
+            crearInterfaz();
+            
+            // Configurar redirección de System.out al log
+            ConsolaRedirect.configurarRedireccion(logCombate);
+            
+            // Actualizar UI
+            actualizarLabelTurno();
+            actualizarPaneles();
+            agregarLog("✅ Partida cargada - Continuando desde turno " + turno);
+            
+            // Reproducir música de batalla
+            reproducirMusica("/sonidos/musica_batalla.wav");
+            
+            // Continuar con el siguiente turno
+            SwingUtilities.invokeLater(this::iniciarSiguienteTurno);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, 
+                "Error al cargar partida:\n" + e.getMessage(), 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
         }
     }
     
@@ -220,10 +278,7 @@ public class VentanaCombateCompleta extends JFrame {
         panelPrincipal.add(panelContenido, BorderLayout.CENTER);
         add(panelPrincipal);
         
-        agregarLog("╔═══════════════════════════════════════════════════════════════╗");
-        agregarLog("║     ¡COMIENZA LA BATALLA EN EL REINO DE TRODAIN!            ║");
-        agregarLog("║              Sistema Completo con Todas las Funcionalidades  ║");
-        agregarLog("╚═══════════════════════════════════════════════════════════════╝");
+        // NO mostrar mensaje inicial aquí, se hará después de configurar redirección
     }
     
     /**
@@ -974,25 +1029,108 @@ public class VentanaCombateCompleta extends JFrame {
     }
     
     /**
-     * NUEVO: Carga batalla desde estado guardado
+     * NUEVO: Carga batalla desde estado guardado (VERSIÓN COMPLETA)
      */
-    private void cargarDesdeEstado(EstadoBatalla estado) throws ExcepcionInventarioLleno {
-        // Simplificado - en producción reconstruirías completamente
+    private void cargarDesdeEstadoCompleto(EstadoBatalla estado) throws Exception {
         agregarLog("📂 Cargando estado desde partida guardada...");
         
-        // Restaurar inventarios
-        for (Map.Entry<String, Map<String, Integer>> entry : estado.inventariosHeroes.entrySet()) {
-            String nombreHeroe = entry.getKey();
-            Map<String, Integer> items = entry.getValue();
+        // Recrear héroes con sus datos
+        for (EstadoBatalla.DatosPersonaje datos : estado.heroes) {
+            Heroe heroe = new Heroe(datos.nombre, datos.hpMax, datos.mpMax, 
+                                   datos.ataque, datos.defensa, datos.velocidad);
+            heroe.setHpActual(datos.hpActual);
+            heroe.setMpActual(datos.mpActual);
             
-            if (inventariosHeroes.containsKey(nombreHeroe)) {
-                InventarioPersonal inv = inventariosHeroes.get(nombreHeroe);
-                
+            // Restaurar estado
+            try {
+                heroe.setEstado(EstadoAlterado.valueOf(datos.estado));
+            } catch (Exception e) {
+                heroe.setEstado(EstadoAlterado.NORMAL);
+            }
+            heroe.setEstadoDuracion(datos.estadoDuracion);
+            
+            // Agregar habilidades básicas (simplificado)
+            agregarHabilidadesBasicas(heroe);
+            
+            heroes.add(heroe);
+            
+            // Inicializar inventario
+            InventarioPersonal inventario = new InventarioPersonal(datos.nombre);
+            inventariosHeroes.put(datos.nombre, inventario);
+            
+            // Cargar ítems del inventario si existen
+            if (estado.inventariosHeroes.containsKey(datos.nombre)) {
+                Map<String, Integer> items = estado.inventariosHeroes.get(datos.nombre);
                 for (Map.Entry<String, Integer> item : items.entrySet()) {
-                    Item itemObj = GestorPersistencia.crearItemDesdeNombre(item.getKey());
-                    inv.agregarItem(itemObj, item.getValue());
+                    try {
+                        Item itemObj = GestorPersistencia.crearItemDesdeNombre(item.getKey());
+                        inventario.agregarItem(itemObj, item.getValue());
+                    } catch (Exception e) {
+                        System.err.println("⚠️ No se pudo cargar ítem: " + item.getKey());
+                    }
                 }
             }
+        }
+        
+        // Recrear enemigos
+        for (EstadoBatalla.DatosPersonaje datos : estado.enemigos) {
+            Personaje enemigo;
+            
+            if ("MiniBoss".equals(datos.tipo)) {
+                enemigo = new MiniBoss(datos.nombre, datos.hpMax, datos.mpMax,
+                                      datos.ataque, datos.defensa, datos.velocidad, 
+                                      datos.comportamiento != null ? datos.comportamiento : "agresivo");
+            } else {
+                enemigo = new Enemigo(datos.nombre, datos.hpMax, datos.mpMax,
+                                     datos.ataque, datos.defensa, datos.velocidad,
+                                     datos.comportamiento != null ? datos.comportamiento : "agresivo");
+            }
+            
+            enemigo.setHpActual(datos.hpActual);
+            enemigo.setMpActual(datos.mpActual);
+            
+            try {
+                enemigo.setEstado(EstadoAlterado.valueOf(datos.estado));
+            } catch (Exception e) {
+                enemigo.setEstado(EstadoAlterado.NORMAL);
+            }
+            enemigo.setEstadoDuracion(datos.estadoDuracion);
+            
+            // Agregar habilidades básicas
+            agregarHabilidadesBasicas(enemigo);
+            
+            enemigos.add(enemigo);
+        }
+        
+        agregarLog("✅ Estado cargado: " + heroes.size() + " héroes, " + enemigos.size() + " enemigos");
+    }
+    
+    /**
+     * Agrega habilidades básicas a un personaje (helper para carga)
+     */
+    private void agregarHabilidadesBasicas(Personaje personaje) {
+        if (personaje instanceof Heroe) {
+            switch (personaje.getNombre()) {
+                case "Héroe" -> {
+                    personaje.agregarHabilidad(new DanioMagico("Bola de Fuego", 10, 30));
+                    personaje.agregarHabilidad(new Curacion("Curar", 8, 25));
+                }
+                case "Yangus" -> {
+                    personaje.agregarHabilidad(new GolpeCritico("Hachazo Brutal", 5));
+                    personaje.agregarHabilidad(new Aturdimiento("Golpe Aturdidor", 8));
+                }
+                case "Jessica" -> {
+                    personaje.agregarHabilidad(new DanioMagico("Rayo", 12, 35));
+                    personaje.agregarHabilidad(new Veneno("Toxina", 8));
+                }
+                case "Angelo" -> {
+                    personaje.agregarHabilidad(new Curacion("Bendición", 10, 30));
+                    personaje.agregarHabilidad(new Paralisis("Toque Sagrado", 10));
+                }
+            }
+        } else {
+            // Habilidades básicas para enemigos
+            personaje.agregarHabilidad(new DanioMagico("Ataque Especial", 5, 20));
         }
     }
     
@@ -1065,8 +1203,13 @@ public class VentanaCombateCompleta extends JFrame {
     }
     
     private void agregarLog(String texto) {
-        logCombate.append(texto + "\n");
-        logCombate.setCaretPosition(logCombate.getDocument().getLength());
+        if (logCombate != null) {
+            logCombate.append(texto + "\n");
+            logCombate.setCaretPosition(logCombate.getDocument().getLength());
+        } else {
+            // Fallback a consola si logCombate no está inicializado
+            System.out.println(texto);
+        }
     }
     
     private JButton crearBotonAccion(String texto) {
