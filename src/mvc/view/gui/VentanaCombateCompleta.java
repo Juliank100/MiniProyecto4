@@ -418,21 +418,30 @@ public class VentanaCombateCompleta extends JFrame {
                     inventario.agregarItem(new PocionCuracion("Poción media", 60), 2);
                     inventario.agregarItem(new HierbaMedicinal(), 2);
                     inventario.agregarItem(new AguaBendita(), 1);
+                    inventario.agregarItem(new PlumaMundo(), 1);
+                    inventario.agregarItem(new PocionMagia("Éter", 20), 2);
                 }
+
                 case "Yangus" -> {
                     inventario.agregarItem(new PocionCuracion("Poción grande", 100), 1);
                     inventario.agregarItem(new HierbaMedicinal(), 3);
                     inventario.agregarItem(new Antidoto("Antídoto"), 1);
+                    inventario.agregarItem(new AlaQuimera(), 1);
+                    inventario.agregarItem(new PocionMagia("Éter", 20), 2);
                 }
                 case "Jessica" -> {
                     inventario.agregarItem(new PocionMagia("Éter", 20), 2);
                     inventario.agregarItem(new SemillaMagica(), 2);
                     inventario.agregarItem(new HierbaMedicinal(), 1);
+                    inventario.agregarItem(new AlaQuimera(), 1);
+                    inventario.agregarItem(new PocionCuracion("Poción media", 60), 2);
                 }
                 case "Angelo" -> {
                     inventario.agregarItem(new PocionCuracion("Poción pequeña", 30), 2);
                     inventario.agregarItem(new AguaBendita(), 1);
                     inventario.agregarItem(new PlumaMundo(), 1);
+                    inventario.agregarItem(new PlumaMundo(), 1);
+                    inventario.agregarItem(new PocionMagia("Éter", 20), 3);
                 }
             }
             
